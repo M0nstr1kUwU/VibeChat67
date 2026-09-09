@@ -43,23 +43,17 @@ async function scrollToBottom() {
 }
 
 async function initDatabase() {
-  // Не подключаемся несколько раз
   if (initializing || db) return;
-
   initializing = true;
   status.value = "Подключение...";
 
   try {
     db = await Database.load("sqlite:messenger.db");
-
     console.log("SQLite подключен");
-
     await loadMessages();
-
     status.value = "Подключено";
   } catch (err) {
     console.error("Ошибка подключения к БД:", err);
-
     db = null;
     status.value = "Ошибка подключения к БД";
   } finally {
@@ -93,6 +87,7 @@ async function sendMessage() {
 onMounted(() => {
   initDatabase();
 });
+
 </script>
 
 <template>
