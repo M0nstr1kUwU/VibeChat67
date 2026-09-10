@@ -1,16 +1,41 @@
 <script setup lang="ts">
+import { nextTick, ref, watch } from "vue";
 import MessageBubble from './MessageBubble.vue';
 import type { Message } from "../types/message";
 
-defineProps<{
+
+const props = defineProps<{
   messages: Message[];
 }>();
+
+//==============================================
+
+const messagesContainer = ref<HTMLElement | null>(null);
+async function scrollToBottom() {
+  await nextTick();
+
+  if (!messagesContainer.value) return;
+
+  messagesContainer.value.scrollTop =
+      messagesContainer.value.scrollHeight;
+}
+
+watch(
+    () => props.messages.length,
+    async () => {
+      await scrollToBottom();
+    }
+);
+
+//==============================================
 </script>
 
 <template>
   <div class="messages"
        ref="messagesContainer"
+
   >
+
     <div
         v-if="messages.length === 0"
         class="empty"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref, nextTick } from "vue";
+import { onMounted, ref } from "vue";
+
 import Database from "@tauri-apps/plugin-sql";
 
 import MessageList from "./components/MessageList.vue";
@@ -12,19 +13,29 @@ const status = ref("Подключение...");
 
 const messages = ref<Message[]>([]);
 
-const messagesContainer = ref<HTMLElement | null>(null);
 
 let db: Database | null = null;
 let initializing = false;
 
-async function scrollToBottom() {
-  await nextTick();
+//===========================
 
-  if (!messagesContainer.value) return;
 
-  messagesContainer.value.scrollTop =
-      messagesContainer.value.scrollHeight;
+async function loadMessages() {
+  if (!db) return;
+
+  try {
+    const result = await db.select<Message[]>(
+        "SELECT id, author, body FROM messages ORDER BY id ASC"
+    );
+    messages.value = result;
+
+  } catch (err) {
+    console.error("Ошибка загрузки сообщений:", err);
+  }
 }
+
+
+//===========================
 
 async function initDatabase() {
   if (initializing || db) return;
@@ -33,6 +44,7 @@ async function initDatabase() {
 
   try {
     db = await Database.load("sqlite:messenger.db");
+    await loadMessages();
     console.log("SQLite подключен");
     status.value = "Подключено";
   } catch (err) {
@@ -55,7 +67,7 @@ async function sendMessage(body: string) {
         "INSERT INTO messages (author, body) VALUES ($1, $2)",
         ["Вы", body]
     );
-    await scrollToBottom();
+    await loadMessages();
   } catch (err) {
     console.error("Ошибка отправки сообщения:", err);
     status.value = "Ошибка отправки сообщения";
