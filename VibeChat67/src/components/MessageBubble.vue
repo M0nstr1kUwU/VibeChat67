@@ -1,14 +1,42 @@
 <script setup lang="ts">
 import type {Message} from "../types/message";
+import { computed } from "vue";
+import { convertFileSrc } from "@tauri-apps/api/core";
 
-defineProps<{
+const props = defineProps<{
   message: Message;
-}>()
+}>();
+
+const emit = defineEmits<{
+  imageLoaded: [];
+}>();
+
+const isImage = computed(() => {
+  return props.message.body.startsWith("__IMAGE__:");
+});
+
+const imagePath = computed(() => {
+  if (!isImage.value) return "";
+
+  const path = props.message.body.substring("__IMAGE__:".length);
+
+  return convertFileSrc(path, "asset");
+});
 </script>
 
 <template>
   <article class="message">
-    <p>{{ message.body }}</p>
+    <template v-if="isImage">
+      <img
+          class="message-image"
+          :src="imagePath"
+          alt="Чёткая фотка"
+          @load="emit('imageLoaded')"
+      />
+    </template>
+    <p v-else>
+      {{ message.body }}
+    </p>
   </article>
 </template>
 
@@ -38,4 +66,17 @@ defineProps<{
   font-size: 10px;
 }
 
+.message-image {
+  display: block;
+
+  max-width: 320px;
+  max-height: 320px;
+
+  width: auto;
+  height: auto;
+
+  border-radius: 8px;
+
+  object-fit: contain;
+}
 </style>

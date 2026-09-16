@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, nextTick } from "vue";
 import EmojiPicker from "./EmojiPicker.vue";
-
+import { open } from "@tauri-apps/plugin-dialog";
 
 const draft = ref("");
 const inputRef = ref<HTMLInputElement | null>(null);
@@ -19,6 +19,35 @@ function submitMessage() {
   emit("send", body);
 
   draft.value = "";
+}
+
+async function selectImage() {
+  try {
+    const selected = await open({
+      multiple: false,
+      directory: false,
+      filters: [
+        {
+          name: "Изображения",
+          extensions: [
+            "png",
+            "jpg",
+            "jpeg",
+            "gif",
+            "webp",
+            "bmp"
+          ],
+        },
+      ],
+    });
+
+    if (!selected || Array.isArray(selected)) {
+      return;
+    }
+    emit("send", `__IMAGE__:${selected}`);
+  } catch (err) {
+    console.error("Ошибка выбора изображения:", err);
+  }
 }
 
 async function addEmoji(emoji: string) {
@@ -53,8 +82,6 @@ async function addEmoji(emoji: string) {
 function CloseEmj() {
   emj.value = !emj.value;
 }
-
-
 </script>
 
 <template>
@@ -62,6 +89,12 @@ function CloseEmj() {
       class="composer"
       @submit.prevent="submitMessage"
   >
+    <button
+        type="button"
+        class="file-button"
+        title="Нюдсы"
+        @click="selectImage"
+    > 📎 </button>
     <div class="input-wrapper">
       <input
           ref="inputRef"
@@ -188,5 +221,39 @@ function CloseEmj() {
 .composer > button[type="submit"]:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+.file-button {
+  width: 44px;
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: 1px solid #343842;
+  border-radius: 8px;
+
+  background: #20232a;
+  color: #f2f3f5;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+}
+
+.file-button:hover {
+  background: #2a2d35;
+  border-color: #4f7fea;
+  color: #ffffff;
+}
+
+.file-button:active {
+  transform: scale(0.95);
 }
 </style>

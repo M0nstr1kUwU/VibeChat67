@@ -1,50 +1,61 @@
 <script setup lang="ts">
 import { nextTick, ref, watch } from "vue";
-import MessageBubble from './MessageBubble.vue';
+import MessageBubble from "./MessageBubble.vue";
 import type { Message } from "../types/message";
-
 
 const props = defineProps<{
   messages: Message[];
 }>();
 
-//==============================================
-
 const messagesContainer = ref<HTMLElement | null>(null);
+
 async function scrollToBottom() {
   await nextTick();
 
-  if (!messagesContainer.value) return;
+  const container = messagesContainer.value;
+  if (!container) return;
 
-  messagesContainer.value.scrollTop =
-      messagesContainer.value.scrollHeight;
+  // Первый скролл после отрисовки сообщений
+  container.scrollTop = container.scrollHeight;
+
+  // Даём изображениям время изменить высоту контейнера
+  requestAnimationFrame(() => {
+    if (!container) return;
+    container.scrollTop = container.scrollHeight;
+  });
+
+  // Дополнительная страховка после загрузки картинок
+  setTimeout(() => {
+    if (!container) return;
+    container.scrollTop = container.scrollHeight;
+  }, 100);
 }
 
 watch(
     () => props.messages.length,
-    async () => {
-      await scrollToBottom();
-    }
+    () => {
+      scrollToBottom();
+    },
+    { immediate: true }
 );
-
-//==============================================
 </script>
 
 <template>
-  <div class="messages"
-       ref="messagesContainer"
-
+  <div
+      ref="messagesContainer"
+      class="messages"
   >
-
     <div
         v-if="messages.length === 0"
         class="empty"
     >
     </div>
+
     <MessageBubble
         v-for="message in messages"
         :key="message.id"
         :message="message"
+        @image-loaded="scrollToBottom"
     />
   </div>
 </template>
