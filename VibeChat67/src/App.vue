@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import {onMounted, ref} from "vue";
 
 import Database from "@tauri-apps/plugin-sql";
 
@@ -24,10 +24,9 @@ async function loadMessages() {
   if (!db) return;
 
   try {
-    const result = await db.select<Message[]>(
+    messages.value = await db.select<Message[]>(
         "SELECT id, author, body FROM messages ORDER BY id ASC"
     );
-    messages.value = result;
 
   } catch (err) {
     console.error("Ошибка загрузки сообщений:", err);
