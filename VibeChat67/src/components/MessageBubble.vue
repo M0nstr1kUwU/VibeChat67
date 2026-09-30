@@ -8,6 +8,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
+  edit: [messageId: number, body: string];
+  delete: [messageId: number];
   imageLoaded: [];
 }>();
 
@@ -23,8 +25,65 @@ const imagePath = computed(() => {
   return convertFileSrc(path, "asset");
 });
 
+const isEditing = ref(false);
+const editText = ref("");
+
 const isPreviewOpen = ref(false);
 const zoom = ref(1);
+
+function startEdit() {
+  if (isImage.value) return;
+
+  editText.value = props.message.body;
+  isEditing.value = true;
+}
+
+function cancelEdit() {
+  isEditing.value = false;
+  editText.value = "";
+}
+
+function saveEdit() {
+  const newBody = editText.value.trim();
+
+  if (!newBody) {
+    return;
+  }
+
+  if (newBody === props.message.body) {
+    cancelEdit();
+    return;
+  }
+
+  emit("edit", props.message.id, newBody);
+
+  isEditing.value = false;
+  editText.value = "";
+}
+
+function handleEditKeydown(event: KeyboardEvent) {
+  if (event.key === "Escape") {
+    cancelEdit();
+    return;
+  }
+
+  if (event.key === "Enter" && event.ctrlKey) {
+    event.preventDefault();
+    saveEdit();
+  }
+}
+
+function deleteMessage() {
+  const confirmed = window.confirm(
+      "Удалить это сообщение?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  emit("delete", props.message.id);
+}
 
 function openImage() {
   if (!isImage.value) return;
@@ -56,6 +115,10 @@ function handleKeydown(event: KeyboardEvent) {
   if (event.key === "Escape" && isPreviewOpen.value) {
     closeImage();
   }
+
+  if (event.key === "Escape" && isEditing.value) {
+    cancelEdit();
+  }
 }
 
 onMounted(() => {
@@ -71,20 +134,79 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <article class="message">
-    <template v-if="isImage">
-      <img
-          class="message-image"
-          :src="imagePath"
-          alt="Чёткая фотка"
-          @load="emit('imageLoaded')"
-          @click="openImage"
-      />
-    </template>
-    <p v-else>
-      {{ message.body }}
-    </p>
+  <article class="message-wrapper">
+    <article class="message">
+      <template v-if="isEditing">
+        <div class="edit-box">
+          <textarea
+              v-model="editText"
+              class="edit-input"
+              rows="3"
+              autofocus
+              @keydown="handleEditKeydown"
+          ></textarea>
+
+          <div class="edit-actions">
+            <button
+                type="button"
+                class="cancel-button"
+                @click="cancelEdit"
+            >
+              Отмена
+            </button>
+
+            <button
+                type="button"
+                class="save-button"
+                :disabled="!editText.trim()"
+                @click="saveEdit"
+            >
+              Сохранить
+            </button>
+          </div>
+        </div>
+      </template>
+
+      <template v-else-if="isImage">
+        <img
+            class="message-image"
+            :src="imagePath"
+            alt="Чёткая фотка"
+            @load="emit('imageLoaded')"
+            @click="openImage"
+        />
+      </template>
+
+      <p v-else>
+        {{ message.body }}
+      </p>
+    </article>
+
+    <div
+        v-if="!isEditing"
+        class="message-actions"
+    >
+      <button
+          v-if="!isImage"
+          type="button"
+          class="action-button"
+          title="Изменить"
+          @click="startEdit"
+      >
+        ✎
+      </button>
+
+      <button
+          type="button"
+          class="action-button delete-button"
+          title="Удалить"
+          @click="deleteMessage"
+      >
+        🗑
+      </button>
+    </div>
   </article>
+
   <Teleport to="body">
     <div
         v-if="isPreviewOpen"
@@ -116,13 +238,20 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.message {
+.message-wrapper {
   align-self: flex-end;
   max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.message {
   margin: 0;
   padding: 10px 12px;
   border-radius: 10px;
-  background: #386be0;
+  background: rgb(38 29 106 / 0.66);
 }
 
 .message p {
@@ -131,13 +260,108 @@ onUnmounted(() => {
   overflow-wrap: anywhere;
 }
 
-.message footer {
+.message-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.message-wrapper:hover .message-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.action-button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #343842;
+  border-radius: 6px;
+  background: #20232a;
+  color: #d9dde5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+}
+
+.action-button:hover {
+  background: #2a2d35;
+  border-color: #2c3851;
+  color: #ffffff;
+}
+
+.delete-button:hover {
+  border-color: #d45c5c;
+}
+
+.edit-box {
+  min-width: 260px;
+  max-width: 420px;
+}
+
+.edit-input {
+  width: 100%;
+  min-height: 80px;
+  resize: vertical;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #333b53;
+  border-radius: 7px;
+  outline: none;
+  background: #20232a;
+  color: #f2f3f5;
+  font: inherit;
+  line-height: 1.45;
+}
+
+.edit-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 5px;
-  margin-top: 6px;
-  color: #ccd8f7;
-  font-size: 10px;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.edit-actions button {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  border: 1px solid #343842;
+  background: #20232a;
+  color: #d5d9e1;
+}
+
+.cancel-button:hover {
+  background: #2a2d35;
+}
+
+.save-button {
+  border: none;
+  background: #ffffff;
+  color: #1a1c21;
+  font-weight: 600;
+}
+
+.save-button:hover:not(:disabled) {
+  background: #e7eaf0;
+}
+
+.save-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .message-image {
@@ -149,7 +373,9 @@ onUnmounted(() => {
   border-radius: 8px;
   object-fit: contain;
   cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition:
+      transform 0.15s ease,
+      opacity 0.15s ease;
 }
 
 .message-image:hover {

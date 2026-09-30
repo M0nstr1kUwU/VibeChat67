@@ -1,24 +1,15 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
-
+import { onMounted, ref } from "vue";
 import Database from "@tauri-apps/plugin-sql";
-
 import MessageList from "./components/MessageList.vue";
-// import { Message } from "./types/message";
 import AppHeader from "./components/AppHeader.vue";
 import MessageComposer from "./components/MessageComposer.vue";
-import {Message} from "./types/message.ts";
+import type { Message } from "./types/message";
 
 const status = ref("Подключение...");
-
 const messages = ref<Message[]>([]);
-
-
 let db: Database | null = null;
 let initializing = false;
-
-//===========================
-
 
 async function loadMessages() {
   if (!db) return;
@@ -27,14 +18,10 @@ async function loadMessages() {
     messages.value = await db.select<Message[]>(
         "SELECT id, author, body FROM messages ORDER BY id ASC"
     );
-
   } catch (err) {
     console.error("Ошибка загрузки сообщений:", err);
   }
 }
-
-
-//===========================
 
 async function initDatabase() {
   if (initializing || db) return;
@@ -73,22 +60,65 @@ async function sendMessage(body: string) {
   }
 }
 
+async function editMessage(
+    messageId: number,
+    body: string
+) {
+  if (!db) {
+    console.warn("БД данных ещё не подключена");
+    return;
+  }
+  try {
+    await db.execute(
+        "UPDATE messages SET body = $1 WHERE id = $2",
+        [body, messageId]
+    );
+    await loadMessages();
+    status.value = "Подключено";
+  } catch (err) {
+    console.error("Ошибка редактирования сообщения:", err);
+    status.value = "Ошибка редактирования сообщения";
+  }
+}
+
+async function deleteMessage(messageId: number) {
+  if (!db) {
+    console.warn("БД данных ещё не подключена");
+    return;
+  }
+  try {
+    await db.execute(
+        "DELETE FROM messages WHERE id = $1",
+        [messageId]
+    );
+    await loadMessages();
+    status.value = "Подключено";
+  } catch (err) {
+    console.error("Ошибка удаления сообщения:", err);
+    status.value = "Ошибка удаления сообщения";
+  }
+}
+
 onMounted(() => {
   initDatabase();
 });
-
 </script>
 
 <template>
   <main class="app">
-    <AppHeader :status="status"/>
+    <AppHeader :status="status" />
     <section class="chat">
       <div class="chat-info">
         <h2>Первый чат</h2>
         <p>Ваш первый локальный мессенджер</p>
       </div>
-      <MessageList :messages="messages"/>
-      <MessageComposer @send="sendMessage"/>
+
+      <MessageList
+          :messages="messages"
+          @edit="editMessage"
+          @delete="deleteMessage"
+      />
+      <MessageComposer @send="sendMessage" />
     </section>
   </main>
 </template>

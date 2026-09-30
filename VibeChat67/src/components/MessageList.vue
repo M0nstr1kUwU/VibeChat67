@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from "vue";
+import { nextTick, ref } from "vue";
 import MessageBubble from "./MessageBubble.vue";
 import type { Message } from "../types/message";
 
-const props = defineProps<{
+defineProps<{
   messages: Message[];
+}>();
+
+const emit = defineEmits<{
+  edit: [messageId: number, body: string];
+  delete: [messageId: number];
 }>();
 
 const messagesContainer = ref<HTMLElement | null>(null);
@@ -15,29 +20,18 @@ async function scrollToBottom() {
   const container = messagesContainer.value;
   if (!container) return;
 
-  // Первый скролл после отрисовки сообщений
   container.scrollTop = container.scrollHeight;
 
-  // Даём изображениям время изменить высоту контейнера
   requestAnimationFrame(() => {
     if (!container) return;
     container.scrollTop = container.scrollHeight;
   });
 
-  // Дополнительная страховка после загрузки картинок
   setTimeout(() => {
     if (!container) return;
     container.scrollTop = container.scrollHeight;
   }, 100);
 }
-
-watch(
-    () => props.messages.length,
-    () => {
-      scrollToBottom();
-    },
-    { immediate: true }
-);
 </script>
 
 <template>
@@ -55,13 +49,14 @@ watch(
         v-for="message in messages"
         :key="message.id"
         :message="message"
+        @edit="(messageId, body) => emit('edit', messageId, body)"
+        @delete="(messageId) => emit('delete', messageId)"
         @image-loaded="scrollToBottom"
     />
   </div>
 </template>
 
 <style scoped>
-
 .messages {
   flex: 1;
   min-height: 0;
@@ -82,5 +77,4 @@ watch(
   text-align: center;
   color: #858c98;
 }
-
 </style>
