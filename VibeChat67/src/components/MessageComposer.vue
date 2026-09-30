@@ -166,7 +166,7 @@ onMounted(() => {
           <div
               v-if="recentImages.length === 0"
               class="recent-images-empty"
-          > Здесь появятся отправленные фото </div>
+          ></div>
           <div
               v-else
               class="recent-images-grid"
