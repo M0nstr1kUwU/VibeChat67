@@ -5,7 +5,15 @@ import { convertFileSrc } from "@tauri-apps/api/core";
 
 const props = defineProps<{
   message: Message;
+  currentUserId: number;
 }>();
+
+const isOwnMessage = computed(() => {
+  return (
+      props.message.user_id ===
+      props.currentUserId
+  );
+});
 
 const emit = defineEmits<{
   edit: [messageId: number, body: string];
@@ -32,6 +40,7 @@ const isPreviewOpen = ref(false);
 const zoom = ref(1);
 
 function startEdit() {
+  if (!isOwnMessage.value) return;
   if (isImage.value) return;
 
   editText.value = props.message.body;
@@ -74,14 +83,11 @@ function handleEditKeydown(event: KeyboardEvent) {
 }
 
 function deleteMessage() {
-  const confirmed = window.confirm(
-      "Удалить это сообщение?"
-  );
-
+  if (!isOwnMessage.value) return;
+  const confirmed = window.confirm("Удалить?");
   if (!confirmed) {
     return;
   }
-
   emit("delete", props.message.id);
 }
 
@@ -134,7 +140,15 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <article class="message-wrapper">
+  <article class="message-wrapper"
+      :class="{
+      own: isOwnMessage,
+      other: !isOwnMessage
+    }">
+    <div class="author-name"
+         :class="{ 'own-name': isOwnMessage }">
+      {{ message.author }}
+    </div>
     <article class="message">
       <template v-if="isEditing">
         <div class="edit-box">
@@ -183,7 +197,7 @@ onUnmounted(() => {
     </article>
 
     <div
-        v-if="!isEditing"
+        v-if="!isEditing && isOwnMessage"
         class="message-actions"
     >
       <button
@@ -239,12 +253,35 @@ onUnmounted(() => {
 
 <style scoped>
 .message-wrapper {
-  align-self: flex-end;
   max-width: 70%;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
   gap: 4px;
+}
+
+.message-wrapper.own {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.message-wrapper.other {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.author-name {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #30343d;
+  color: #aab3c2;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.author-name.own-name {
+  background: #384b82;
+  color: #dce6ff;
 }
 
 .message {
@@ -252,6 +289,10 @@ onUnmounted(() => {
   padding: 10px 12px;
   border-radius: 10px;
   background: rgb(38 29 106 / 0.66);
+}
+
+.message-wrapper.other .message {
+  background: #20232a;
 }
 
 .message p {

@@ -5,6 +5,7 @@ import type { Message } from "../types/message";
 
 const props = defineProps<{
   messages: Message[];
+  currentUserId: number;
 }>();
 
 watch(
@@ -57,6 +58,7 @@ async function scrollToBottom() {
         v-for="message in messages"
         :key="message.id"
         :message="message"
+        :current-user-id="currentUserId"
         @edit="(messageId, body) => emit('edit', messageId, body)"
         @delete="(messageId) => emit('delete', messageId)"
         @image-loaded="scrollToBottom"
