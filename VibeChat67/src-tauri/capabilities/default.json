@@ -10,6 +10,13 @@
     "opener:default",
     "sql:default",
     "sql:allow-execute",
-    "dialog:default"
+    "dialog:default",
+    "fs:default",
+    "fs:allow-exists",
+    "fs:allow-mkdir",
+    "fs:allow-read-dir",
+    "fs:allow-read-text-file",
+    "fs:allow-write-text-file",
+    "fs:allow-remove"
   ]
 }

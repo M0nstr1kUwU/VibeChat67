@@ -4,6 +4,7 @@ import Database from "@tauri-apps/plugin-sql";
 import MessageList from "./components/MessageList.vue";
 import AppHeader from "./components/AppHeader.vue";
 import MessageComposer from "./components/MessageComposer.vue";
+import Settings from "./components/Settings.vue";
 import type { Message, User } from "./types/message";
 
 const status = ref("Подключение...");
@@ -11,11 +12,11 @@ const messages = ref<Message[]>([]);
 const users = ref<User[]>([
   {
     id: 0,
-    name: "GANGRENA",
+    name: "ЗУМЕР67",
   },
   {
     id: 1,
-    name: "PIDOR",
+    name: "БУМЕР1998",
   },
   {
     id: 2,
@@ -24,6 +25,16 @@ const users = ref<User[]>([
 ]);
 
 const currentUserId = ref(0);
+type AppTab = "chat" | "settings";
+
+const currentTab = ref<AppTab>("chat");
+
+const isChatTab = computed(() => currentTab.value === "chat");
+const isSettingsTab = computed(() => currentTab.value === "settings");
+
+function switchTab(tab: AppTab) {
+  currentTab.value = tab;
+}
 
 const currentUser = computed(() => {
   return users.value.find(
@@ -229,23 +240,38 @@ onMounted(() => {
 <template>
   <main class="app">
     <AppHeader :status="status" />
-    <div class="user-switcher">
+    <div class="app-tabs">
       <button
-          v-for="user in users"
-          :key="user.id"
           type="button"
-          @click="switchUser(user.id)"
+          :class="{ active: isChatTab }"
+          @click="switchTab('chat')"
       >
-        Пользователь {{ user.id }}: {{ user.name }}
+        💬
+      </button>
+      <button
+          type="button"
+          :class="{ active: isSettingsTab }"
+          @click="switchTab('settings')"
+      >
+        ⚙️
       </button>
     </div>
-    <section class="chat">
+    <section v-if="isChatTab" class="chat">
+      <div class="user-switcher">
+        <button
+            v-for="user in users"
+            :key="user.id"
+            type="button"
+            @click="switchUser(user.id)"
+        >
+          Пользователь {{ user.id }}: {{ user.name }}
+        </button>
+      </div>
       <div class="chat-info">
         <h2>Ваш Первый чат</h2>
         <p><strong>{{ currentUser?.name }}</strong></p>
         <p>ID: <strong>{{ currentUserId }}</strong></p>
       </div>
-
       <MessageList
           :messages="messages"
           :current-user-id="currentUserId"
@@ -254,6 +280,7 @@ onMounted(() => {
       />
       <MessageComposer @send="sendMessage" />
     </section>
+    <Settings v-else />
   </main>
 </template>
 
@@ -301,10 +328,27 @@ onMounted(() => {
 .user-switcher {
   flex-shrink: 0;
   display: flex;
+  align-items: center;
   gap: 8px;
   padding: 8px 24px;
   border-bottom: 1px solid #252830;
   background: #111318;
+}
+
+.user-switcher button {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid #30343d;
+  border-radius: 6px;
+  background: #20232a;
+  color: #f2f3f5;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
+.user-switcher button:hover {
+  background: #2a2e37;
 }
 
 .chat {
@@ -331,5 +375,40 @@ onMounted(() => {
   margin: 5px 0 0;
   color: #858c98;
   font-size: 13px;
+}
+
+.app-tabs {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 48px;
+  padding: 6px 24px;
+  border-bottom: 1px solid #252830;
+  background: #111318;
+}
+
+.app-tabs button {
+  width: 40px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #858c98;
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+}
+
+.app-tabs button:hover {
+  background: #20232a;
+  color: #f2f3f5;
+}
+
+.app-tabs button.active {
+  background: #303b59;
+  border-color: #3d4d75;
+  color: #ffffff;
 }
 </style>

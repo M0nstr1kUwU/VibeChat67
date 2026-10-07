@@ -1,0 +1,196 @@
+[
+  {
+    "id": "dark",
+    "name": "Тёмная",
+    "rules": [
+      {
+        "selector": ".app",
+        "properties": {
+          "background": "#111318",
+          "color": "#f2f3f5"
+        }
+      },
+      {
+        "selector": ".user-switcher",
+        "properties": {
+          "background": "#111318",
+          "border-color": "#252830"
+        }
+      },
+      {
+        "selector": ".chat-info",
+        "properties": {
+          "background": "#111318",
+          "border-color": "#252830"
+        }
+      },
+      {
+        "selector": ".app-tabs",
+        "properties": {
+          "background": "#111318",
+          "border-color": "#252830"
+        }
+      }
+    ]
+  },
+  {
+    "id": "light",
+    "name": "Light",
+    "rules": [
+      {
+        "selector": ".app",
+        "properties": {
+          "background": "#eef1f5",
+          "color": "#1f2937"
+        }
+      },
+      {
+        "selector": ".user-switcher",
+        "properties": {
+          "background": "#ffffff",
+          "border-color": "#d8dde6"
+        }
+      },
+      {
+        "selector": ".user-switcher button",
+        "properties": {
+          "background": "#f1f4f8",
+          "border-color": "#cbd2dc",
+          "color": "#202733"
+        }
+      },
+      {
+        "selector": ".user-switcher button:hover",
+        "properties": {
+          "background": "#e5eaf1",
+          "border-color": "#b8c1ce"
+        }
+      },
+      {
+        "selector": ".app-tabs",
+        "properties": {
+          "background": "#ffffff",
+          "border-color": "#d8dde6"
+        }
+      },
+      {
+        "selector": ".app-tabs button",
+        "properties": {
+          "color": "#687385"
+        }
+      },
+      {
+        "selector": ".app-tabs button:hover",
+        "properties": {
+          "background": "#eef1f5",
+          "color": "#202733"
+        }
+      },
+      {
+        "selector": ".app-tabs button.active",
+        "properties": {
+          "background": "#dce7ff",
+          "border-color": "#9db7ea",
+          "color": "#234a91"
+        }
+      },
+      {
+        "selector": ".chat",
+        "properties": {
+          "background": "#eef1f5",
+          "color": "#1f2937"
+        }
+      },
+      {
+        "selector": ".chat-info",
+        "properties": {
+          "background": "#f8fafc",
+          "border-color": "#d8dde6"
+        }
+      },
+      {
+        "selector": ".chat-info h2",
+        "properties": {
+          "color": "#18202b"
+        }
+      },
+      {
+        "selector": ".chat-info p",
+        "properties": {
+          "color": "#697586"
+        }
+      },
+      {
+        "selector": ".messages",
+        "properties": {
+          "background": "#eef1f5"
+        }
+      },
+      {
+        "selector": ".message",
+        "properties": {
+          "background": "#ffffff",
+          "border-color": "#d6dce5",
+          "color": "#1d2733"
+        }
+      },
+      {
+        "selector": ".message p",
+        "properties": {
+          "color": "#1d2733"
+        }
+      },
+      {
+        "selector": ".message footer",
+        "properties": {
+          "color": "#7b8696"
+        }
+      },
+      {
+        "selector": ".composer",
+        "properties": {
+          "background": "#ffffff",
+          "border-color": "#d8dde6"
+        }
+      },
+      {
+        "selector": ".composer input",
+        "properties": {
+          "background": "#f6f8fb",
+          "border-color": "#cbd3df",
+          "color": "#1d2733"
+        }
+      },
+      {
+        "selector": ".composer input::placeholder",
+        "properties": {
+          "color": "#8b95a5"
+        }
+      },
+      {
+        "selector": ".file-button",
+        "properties": {
+          "background": "#eef2f7",
+          "border-color": "#cbd3df",
+          "color": "#354052"
+        }
+      },
+      {
+        "selector": ".emoji-button",
+        "properties": {
+          "background": "#eef2f7",
+          "border-color": "#cbd3df",
+          "color": "#354052"
+        }
+      },
+      {
+        "selector": ".composer > button[type=\"submit\"]",
+        "properties": {
+          "background": "#315bb5",
+          "border-color": "#315bb5",
+          "color": "#ffffff"
+        }
+      }
+    ]
+  }
+]
