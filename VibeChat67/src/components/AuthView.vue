@@ -1,34 +1,21 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import {
-  loginUser,
-  registerUser,
-} from "../services/userStorage";
+import {loginUser, registerUser,} from "../services/userStorage";
 import type { UserAccount } from "../types/user";
 
-type AuthMode =
-    | "login"
-    | "register";
-
+type AuthMode = | "login" | "register";
 const mode = ref<AuthMode>("login");
-
 const login = ref("");
 const nickname = ref("");
 const password = ref("");
 const repeatPassword = ref("");
-
 const error = ref("");
 const loading = ref(false);
-
 const emit = defineEmits<{
   authenticated: [user: UserAccount];
 }>();
-
-function switchMode(
-    newMode: AuthMode
-) {
+function switchMode(newMode: AuthMode) {
   mode.value = newMode;
-
   error.value = "";
   password.value = "";
   repeatPassword.value = "";
@@ -46,59 +33,31 @@ async function submit() {
     return;
   }
 
-  if (
-      mode.value === "register" &&
-      !nickname.value.trim()
-  ) {
+  if (mode.value === "register" && !nickname.value.trim()) {
     error.value = "Введите никнейм.";
     return;
   }
-
   if (!password.value) {
     error.value = "Введите пароль.";
     return;
   }
-
-  if (
-      mode.value === "register" &&
-      password.value !==
-      repeatPassword.value
-  ) {
-    error.value =
-        "Пароли не совпадают.";
+  if (mode.value === "register" && password.value !== repeatPassword.value) {
+    error.value = "Пароли не совпадают.";
     return;
   }
-
   loading.value = true;
-
   try {
     let user: UserAccount;
-
     if (mode.value === "login") {
-      user = await loginUser(
-          login.value,
-          password.value
-      );
+      user = await loginUser(login.value, password.value);
     } else {
-      user = await registerUser(
-          login.value,
-          nickname.value,
-          password.value
-      );
+      user = await registerUser(login.value, nickname.value, password.value);
     }
-
-    emit(
-        "authenticated",
-        user
-    );
-
+    emit("authenticated", user);
     password.value = "";
     repeatPassword.value = "";
   } catch (err) {
-    error.value =
-        err instanceof Error
-            ? err.message
-            : "Произошла ошибка.";
+    error.value = err instanceof Error ? err.message : "Произошла ошибка.";
   } finally {
     loading.value = false;
   }
@@ -108,18 +67,9 @@ async function submit() {
 <template>
   <main class="auth-page">
     <section class="auth-card">
-      <div class="auth-logo">
-        V
-      </div>
-
-      <h1>
-        Vibe Chat 67
-      </h1>
-
-      <p class="auth-subtitle">
-        Локальный мессенджер
-      </p>
-
+      <div class="auth-logo">V</div>
+      <h1>Vibe Chat 67</h1>
+      <p class="auth-subtitle">Локально</p>
       <div class="auth-tabs">
         <button
             type="button"
@@ -127,31 +77,17 @@ async function submit() {
             active: mode === 'login'
           }"
             @click="switchMode('login')"
-        >
-          Войти
-        </button>
-
+        >Войти</button>
         <button
             type="button"
             :class="{
             active: mode === 'register'
           }"
-            @click="
-            switchMode('register')
-          "
-        >
-          Регистрация
-        </button>
+            @click="switchMode('register')"
+        >Регистрация</button>
       </div>
-
-      <form
-          class="auth-form"
-          @submit.prevent="submit"
-      >
-        <label>
-          Логин
-
-          <input
+      <form class="auth-form" @submit.prevent="submit">
+        <label>Логин<input
               v-model="login"
               type="text"
               placeholder="username"
@@ -159,52 +95,39 @@ async function submit() {
               maxlength="32"
           />
         </label>
-
         <label
             v-if="mode === 'register'"
-        >
-          Никнейм
-
-          <input
+        >Никнейм<input
               v-model="nickname"
               type="text"
-              placeholder="Как вас будут видеть"
+              placeholder="Никнейм"
               autocomplete="nickname"
               maxlength="32"
           />
         </label>
 
         <label>
-          Пароль
-
-          <input
+          Пароль<input
               v-model="password"
               type="password"
               placeholder="Минимум 6 символов"
               autocomplete="current-password"
           />
         </label>
-
-        <label
-            v-if="mode === 'register'"
-        >
-          Повторите пароль
-
-          <input
+        <label v-if="mode === 'register'"
+        >Повторите пароль<input
               v-model="repeatPassword"
               type="password"
               placeholder="Повторите пароль"
               autocomplete="new-password"
           />
         </label>
-
         <div
             v-if="error"
             class="auth-error"
         >
           {{ error }}
         </div>
-
         <button
             type="submit"
             class="auth-submit"
@@ -219,11 +142,7 @@ async function submit() {
           }}
         </button>
       </form>
-
-      <div class="auth-footer">
-        Данные пользователей
-        хранятся локально
-      </div>
+      <div class="auth-footer"></div>
     </section>
   </main>
 </template>
@@ -246,9 +165,7 @@ async function submit() {
   border: 1px solid #292c34;
   border-radius: 14px;
   background: #17191f;
-  box-shadow:
-      0 20px 60px
-      rgba(0, 0, 0, 0.35);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }
 
 .auth-logo {
@@ -363,9 +280,7 @@ async function submit() {
   cursor: pointer;
   font: inherit;
   font-weight: 600;
-  transition:
-      background 0.15s ease,
-      transform 0.1s ease;
+  transition: background 0.15s ease, transform 0.1s ease;
 }
 
 .auth-submit:hover:not(:disabled) {

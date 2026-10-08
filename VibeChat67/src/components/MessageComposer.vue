@@ -7,21 +7,16 @@ import { invoke, convertFileSrc } from "@tauri-apps/api/core";
 const draft = ref("");
 const inputRef = ref<HTMLInputElement | null>(null);
 const emj = ref(false);
-
 const recentImages = ref<string[]>([]);
 const showRecentImages = ref(false);
-
 const emit = defineEmits<{
   send: [body: string];
 }>();
 
 function submitMessage() {
   const body = draft.value.trim();
-
   if (!body) return;
-
   emit("send", body);
-
   draft.value = "";
 }
 
@@ -48,16 +43,8 @@ async function selectImage() {
     if (!selected || Array.isArray(selected)) {
       return;
     }
-
-    const savedPath = await invoke<string>(
-        "save_attachment",
-        {
-          sourcePath: selected,
-        }
-    );
-
+    const savedPath = await invoke<string>("save_attachment", {sourcePath: selected,});
     emit("send", `__IMAGE__:${savedPath}`);
-
     await loadRecentImages();
     showRecentImages.value = false;
   } catch (err) {
@@ -67,14 +54,9 @@ async function selectImage() {
 
 async function loadRecentImages() {
   try {
-    recentImages.value = await invoke<string[]>(
-        "get_recent_attachments"
-    );
+    recentImages.value = await invoke<string[]>("get_recent_attachments");
   } catch (err) {
-    console.error(
-        "Ошибка загрузки недавних фото:",
-        err
-    );
+    console.error("Ошибка загрузки недавних фото:", err);
   }
 }
 
@@ -97,7 +79,6 @@ function sendRecentImage(path: string) {
 
 async function addEmoji(emoji: string) {
   const input = inputRef.value;
-
   if (!input) {
     draft.value += emoji;
     return;
@@ -105,19 +86,12 @@ async function addEmoji(emoji: string) {
 
   const start = input.selectionStart ?? draft.value.length;
   const end = input.selectionEnd ?? draft.value.length;
-  draft.value =
-      draft.value.slice(0, start) +
-      emoji +
-      draft.value.slice(end);
+  draft.value = draft.value.slice(0, start) + emoji + draft.value.slice(end);
   emj.value = false;
   await nextTick();
-  const newCursorPosition =
-      start + emoji.length;
+  const newCursorPosition = start + emoji.length;
   input.focus();
-  input.setSelectionRange(
-      newCursorPosition,
-      newCursorPosition
-  );
+  input.setSelectionRange(newCursorPosition, newCursorPosition);
 }
 
 function CloseEmj() {
@@ -129,10 +103,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <form
-      class="composer"
-      @submit.prevent="submitMessage"
-  >
+  <form class="composer" @submit.prevent="submitMessage">
     <div class="file-picker">
       <button
           type="button"
@@ -140,11 +111,7 @@ onMounted(() => {
           title="Изображения"
           @click="toggleRecentImages"
       > 📎 </button>
-
-      <div
-          v-if="showRecentImages"
-          class="image-menu"
-      >
+      <div v-if="showRecentImages" class="image-menu">
         <button
             type="button"
             class="choose-photo-button"
@@ -153,24 +120,17 @@ onMounted(() => {
           <span class="choose-photo-icon"> 📁 </span>
           <span class="choose-photo-text">
             <strong>Выбрать фото</strong>
-            <small>
-              Открыть проводник
-            </small>
+            <small>Открыть проводник</small>
           </span>
         </button>
         <div class="menu-divider"></div>
         <div class="recent-section">
-          <div class="recent-images-title">
-            Недавние фото
-          </div>
+          <div class="recent-images-title">Недавние фото</div>
           <div
               v-if="recentImages.length === 0"
               class="recent-images-empty"
           ></div>
-          <div
-              v-else
-              class="recent-images-grid"
-          >
+          <div v-else class="recent-images-grid">
             <button
                 v-for="image in recentImages"
                 :key="image"
@@ -181,7 +141,7 @@ onMounted(() => {
             >
               <img
                   :src="getImageUrl(image)"
-                  alt="Недавнее фото"
+                  alt="Недавние фото"
               />
             </button>
           </div>
@@ -198,20 +158,14 @@ onMounted(() => {
           autocomplete="off"
           @focus="emj = false"
       />
-      <EmojiPicker
-          v-if="emj"
-          @select="addEmoji"
-      />
+      <EmojiPicker v-if="emj" @select="addEmoji"/>
     </div>
     <button
         type="button"
         class="emoji-button"
         @click="CloseEmj"
     > ☢ </button>
-    <button
-        type="submit"
-        :disabled="!draft.trim()"
-    > Отправить </button>
+    <button type="submit" :disabled="!draft.trim()"> Отправить </button>
   </form>
 </template>
 
@@ -338,8 +292,7 @@ onMounted(() => {
 
 .recent-images-grid {
   display: grid;
-  grid-template-columns:
-    repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 7px;
   max-height: 230px;
   overflow-y: auto;

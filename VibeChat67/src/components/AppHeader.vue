@@ -46,9 +46,7 @@ const initials = computed(() => {
   <header class="header">
     <div class="header-title">
       <h1>Vibe Chat 67</h1>
-      <p>{{ status }}</p>
-    </div>
-
+      <p>{{ status }}</p></div>
     <div class="header-right">
       <div class="profile">
         <div class="profile-avatar">
@@ -57,26 +55,14 @@ const initials = computed(() => {
               :src="avatarUrl"
               :alt="user.nickname"
           />
-
-          <span v-else>
-            {{ initials }}
-          </span>
+          <span v-else>{{ initials }}</span>
         </div>
-
         <div class="profile-info">
-          <strong>
-            {{ user.nickname }}
-          </strong>
-
-          <span>
-            @{{ user.login }}
-          </span>
+          <strong>{{ user.nickname }}</strong>
+          <span>@{{ user.login }}</span>
         </div>
       </div>
-
-      <span class="badge">
-        Локально
-      </span>
+      <span class="badge">Локально</span>
     </div>
   </header>
 </template>

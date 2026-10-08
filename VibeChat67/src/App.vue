@@ -249,26 +249,20 @@ async function handleAuthenticated(user: UserAccount) {
   } else {
     users.value[existingIndex] = user;
   }
-
   currentUserId.value = user.id;
   currentTab.value = "chat";
   messages.value = [];
-  status.value =
-      "Подключение...";
+  status.value = "Подключение...";
   await initDatabase();
 }
 
-function handleProfileUpdated(
-    user: UserAccount
-) {
+function handleProfileUpdated(user: UserAccount) {
   const index = users.value.findIndex(item => item.id === user.id);
   if (index === -1) {
-    users.value.push(
-        user
+    users.value.push(user
     );
   } else {
-    users.value[index] =
-        user;
+    users.value[index] = user;
   }
   saveUsersToDatabase();
 }
@@ -277,48 +271,29 @@ async function handleLogout() {
   try {
     await logoutUser();
   } catch (error) {
-    console.error(
-        "Ошибка выхода:",
-        error
-    );
+    console.error("Ошибка выхода:", error);
   }
   currentUserId.value = null;
   currentTab.value = "chat";
   messages.value = [];
-  status.value =
-      "Вход не выполнен";
+  status.value = "Вход не выполнен";
 }
 
 async function initializeApp() {
   try {
-    users.value =
-        await loadUsers();
-
-    const sessionUser =
-        await restoreSession(
-            users.value
-        );
-
+    users.value = await loadUsers();
+    const sessionUser = await restoreSession(users.value);
     if (sessionUser) {
-      currentUserId.value =
-          sessionUser.id;
-
+      currentUserId.value = sessionUser.id;
       await initDatabase();
     } else {
-      status.value =
-          "Вход не выполнен";
+      status.value = "Вход не выполнен";
     }
   } catch (error) {
-    console.error(
-        "Ошибка запуска приложения:",
-        error
-    );
-
-    status.value =
-        "Ошибка запуска";
+    console.error("Ошибка запуска приложения:", error);
+    status.value = "Ошибка запуска";
   } finally {
-    authReady.value =
-        true;
+    authReady.value = true;
   }
 }
 
@@ -333,17 +308,11 @@ onMounted(() => {
       class="startup"
   >
     <div class="startup-spinner"></div>
-
-    <span>
-      Запуск Vibe Chat 67...
-    </span>
+    <span>Запуск Vibe Chat 67...</span>
   </div>
-
   <AuthView
       v-else-if="!currentUser"
-      @authenticated="
-      handleAuthenticated
-    "
+      @authenticated="handleAuthenticated"
   />
 
   <main
@@ -361,68 +330,39 @@ onMounted(() => {
           :class="{
           active: isChatTab
         }"
-          @click="
-          switchTab('chat')
-        "
-      >
-        💬
-      </button>
+          @click="switchTab('chat')"
+      >💬</button>
 
       <button
           type="button"
           :class="{
-          active:
-            isSettingsTab
+          active: isSettingsTab
         }"
-          @click="
-          switchTab('settings')
-        "
-      >
-        ⚙️
-      </button>
+          @click="switchTab('settings')"
+      >⚙️</button>
     </div>
-
-    <section
-        v-if="isChatTab"
-        class="chat"
-    >
+    <section v-if="isChatTab" class="chat">
       <div class="chat-info">
-        <h2>
-          Ваш Первый чат
-        </h2>
-
-        <p>
-          <strong>
-            {{ currentUser.nickname }}
-          </strong>
-        </p>
-
-        <p>
-          @{{ currentUser.login }}
-        </p>
+        <h2>Ваш Первый чат</h2>
+        <p><strong>{{ currentUser.nickname }}</strong></p>
+        <p>@{{ currentUser.login }}</p>
       </div>
 
       <MessageList
           :messages="messages"
-          :current-user-id="
-          currentUser.id
-        "
+          :current-user-id="currentUser.id"
           :users="users"
           @edit="editMessage"
           @delete="deleteMessage"
       />
-
       <MessageComposer
           @send="sendMessage"
       />
     </section>
-
     <Settings
         v-else
         :user="currentUser"
-        @profile-updated="
-        handleProfileUpdated
-      "
+        @profile-updated="handleProfileUpdated"
         @logout="handleLogout"
     />
   </main>
@@ -440,58 +380,39 @@ onMounted(() => {
 
 :global(body) {
   margin: 0;
-
   width: 100%;
   height: 100vh;
-
   min-width: 320px;
-
   overflow: hidden;
-
-  font-family:
-      Inter,
-      system-ui,
-      -apple-system,
-      BlinkMacSystemFont,
-      "Segoe UI",
-      sans-serif;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 :global(#app) {
   width: 100%;
   height: 100vh;
-
   overflow: hidden;
 }
 
 .startup {
   width: 100%;
   height: 100vh;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   gap: 14px;
-
   background: #111318;
   color: #f2f3f5;
-
   font-size: 13px;
 }
 
 .startup-spinner {
   width: 30px;
   height: 30px;
-
   border: 3px solid #30343d;
   border-top-color: #4f7fea;
   border-radius: 50%;
-
-  animation:
-      startup-spin
-      0.8s linear infinite;
+  animation: startup-spin 0.8s linear infinite;
 }
 
 @keyframes startup-spin {
@@ -503,83 +424,59 @@ onMounted(() => {
 .app {
   height: 100vh;
   width: 100%;
-
   display: flex;
   flex-direction: column;
-
   overflow: hidden;
-
   background: #111318;
   color: #f2f3f5;
 }
 
 .chat {
   flex: 1;
-
   min-height: 0;
   min-width: 0;
-
   display: flex;
   flex-direction: column;
-
   overflow: hidden;
 }
 
 .chat-info {
   flex-shrink: 0;
-
   padding: 18px 24px;
-
-  border-bottom:
-      1px solid #252830;
+  border-bottom: 1px solid #252830;
 }
 
 .chat-info h2 {
   margin: 0;
-
   font-size: 16px;
 }
 
 .chat-info p {
   margin: 5px 0 0;
-
   color: #858c98;
-
   font-size: 13px;
 }
 
 .app-tabs {
   flex-shrink: 0;
-
   display: flex;
   align-items: center;
-
   gap: 4px;
-
   height: 48px;
-
   padding: 6px 24px;
-
-  border-bottom:
-      1px solid #252830;
-
+  border-bottom: 1px solid #252830;
   background: #111318;
 }
 
 .app-tabs button {
   width: 40px;
   height: 34px;
-
   padding: 0;
-
   border: 1px solid transparent;
   border-radius: 6px;
-
   background: transparent;
   color: #858c98;
-
   cursor: pointer;
-
   font: inherit;
   font-size: 15px;
 }
