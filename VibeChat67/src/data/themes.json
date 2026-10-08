@@ -1,7 +1,7 @@
 [
   {
     "id": "dark",
-    "name": "Тёмная",
+    "name": "Dark",
     "rules": [
       {
         "selector": ".app",
@@ -41,7 +41,7 @@
         "selector": ".app",
         "properties": {
           "background": "#eef1f5",
-          "color": "#1f2937"
+          "color": "#ffffff"
         }
       },
       {
@@ -131,13 +131,13 @@
         "properties": {
           "background": "#ffffff",
           "border-color": "#d6dce5",
-          "color": "#1d2733"
+          "color": "#ffffff"
         }
       },
       {
         "selector": ".message p",
         "properties": {
-          "color": "#1d2733"
+          "color": "#ffffff"
         }
       },
       {
@@ -189,6 +189,22 @@
           "background": "#315bb5",
           "border-color": "#315bb5",
           "color": "#ffffff"
+        }
+      },
+      {
+        "selector": ".header",
+        "properties": {
+          "background": "#FFEFD5",
+          "border-color": "#E6E6FA",
+          "color": "#F0FFFF"
+        }
+      },
+      {
+        "selector": ".app-tabs",
+        "properties": {
+          "background": "#FFEFD5",
+          "border-color": "#E6E6FA",
+          "color": "#F0FFFF"
         }
       }
     ]
