@@ -30,6 +30,64 @@
           "background": "#111318",
           "border-color": "#252830"
         }
+      },
+      {
+        "selector": ".messages",
+        "properties": {
+          "background": "#111318"
+        }
+      },
+      {
+        "selector": ".message",
+        "properties": {
+          "background": "#20232a",
+          "border-color": "#30343d",
+          "color": "#f2f3f5",
+          "border-radius": "5px 17px 17px 17px"
+        }
+      },
+      {
+        "selector": ".message-wrapper.own .message",
+        "properties": {
+          "background": "#304b7d",
+          "border-color": "#4165a8",
+          "color": "#f7f9ff",
+          "border-radius": "17px 5px 17px 17px"
+        }
+      },
+      {
+        "selector": ".message p",
+        "properties": {
+          "color": "inherit"
+        }
+      },
+      {
+        "selector": ".author-name",
+        "properties": {
+          "background": "#292d36",
+          "color": "#b9c2d2"
+        }
+      },
+      {
+        "selector": ".author-name.own-name",
+        "properties": {
+          "background": "#303f65",
+          "color": "#e0e9ff"
+        }
+      },
+      {
+        "selector": ".message-actions .action-button",
+        "properties": {
+          "background": "#20232a",
+          "border-color": "#343842",
+          "color": "#d9dde5"
+        }
+      },
+      {
+        "selector": ".messages::-webkit-scrollbar-thumb",
+        "properties": {
+          "background": "#3a3e49"
+        }
       }
     ]
   },
@@ -205,6 +263,174 @@
           "background": "#FFEFD5",
           "border-color": "#E6E6FA",
           "color": "#F0FFFF"
+        }
+      },
+      {
+        "selector": ".app",
+        "properties": {
+          "background": "#eef1f5",
+          "color": "#202733"
+        }
+      },
+      {
+        "selector": ".header",
+        "properties": {
+          "background": "#ffffff",
+          "border-color": "#d8dde6",
+          "color": "#202733"
+        }
+      },
+      {
+        "selector": ".app-tabs",
+        "properties": {
+          "background": "#ffffff",
+          "border-color": "#d8dde6",
+          "color": "#202733"
+        }
+      },
+      {
+        "selector": ".chat",
+        "properties": {
+          "background": "#eef1f5",
+          "color": "#1f2937"
+        }
+      },
+      {
+        "selector": ".chat-info",
+        "properties": {
+          "background": "#f8fafc",
+          "border-color": "#d8dde6",
+          "color": "#18202b"
+        }
+      },
+      {
+        "selector": ".chat-info h2",
+        "properties": {
+          "color": "#18202b"
+        }
+      },
+      {
+        "selector": ".chat-info p",
+        "properties": {
+          "color": "#697586"
+        }
+      },
+      {
+        "selector": ".messages",
+        "properties": {
+          "background": "#eef1f5"
+        }
+      },
+      {
+        "selector": ".message",
+        "properties": {
+          "background": "#ffffff",
+          "border-color": "#d6dce5",
+          "color": "#263244",
+          "border-radius": "5px 17px 17px 17px"
+        }
+      },
+      {
+        "selector": ".message-wrapper.own .message",
+        "properties": {
+          "background": "#dce8ff",
+          "border-color": "#bfd1f5",
+          "color": "#20385f",
+          "border-radius": "17px 5px 17px 17px"
+        }
+      },
+      {
+        "selector": ".message p",
+        "properties": {
+          "color": "inherit"
+        }
+      },
+      {
+        "selector": ".author-name",
+        "properties": {
+          "background": "#e6eaf0",
+          "color": "#48566a"
+        }
+      },
+      {
+        "selector": ".author-name.own-name",
+        "properties": {
+          "background": "#d4e1fb",
+          "color": "#234a91"
+        }
+      },
+      {
+        "selector": ".author-avatar",
+        "properties": {
+          "background": "#526da8",
+          "color": "#ffffff"
+        }
+      },
+      {
+        "selector": ".message-actions .action-button",
+        "properties": {
+          "background": "#ffffff",
+          "border-color": "#d6dce5",
+          "color": "#354052"
+        }
+      },
+      {
+        "selector": ".message-actions .action-button:hover",
+        "properties": {
+          "background": "#eef2f8",
+          "border-color": "#9db7ea",
+          "color": "#234a91"
+        }
+      },
+      {
+        "selector": ".composer",
+        "properties": {
+          "background": "#ffffff",
+          "border-color": "#d8dde6"
+        }
+      },
+      {
+        "selector": ".composer input",
+        "properties": {
+          "background": "#f6f8fb",
+          "border-color": "#cbd3df",
+          "color": "#1d2733"
+        }
+      },
+      {
+        "selector": ".composer input::placeholder",
+        "properties": {
+          "color": "#8b95a5"
+        }
+      },
+      {
+        "selector": ".file-button",
+        "properties": {
+          "background": "#eef2f7",
+          "border-color": "#cbd3df",
+          "color": "#354052"
+        }
+      },
+      {
+        "selector": ".emoji-button",
+        "properties": {
+          "background": "#eef2f7",
+          "border-color": "#cbd3df",
+          "color": "#354052"
+        }
+      },
+      {
+        "selector": ".composer > button[type=\"submit\"]",
+        "properties": {
+          "background": "#315bb5",
+          "border-color": "#315bb5",
+          "color": "#ffffff"
+        }
+      },
+      {
+        "selector": ".messages::-webkit-scrollbar-thumb",
+        "properties": {
+          "background": "#c5ccd7"
         }
       }
     ]

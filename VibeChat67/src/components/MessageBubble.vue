@@ -258,10 +258,35 @@ onUnmounted(() => {
 
 <style scoped>
 .message-wrapper {
-  max-width: 70%;
+  --avatar-bg: #384b82;
+  --avatar-own-bg: #4a64a0;
+  --author-tag-bg: #292d36;
+  --author-tag-color: #b9c2d2;
+  --author-own-tag-bg: #303f65;
+  --author-own-tag-color: #e0e9ff;
+  --message-border: #30343d;
+  --message-bg: #20232a;
+  --message-color: #f2f3f5;
+  --message-own-border: #4165a8;
+  --message-own-bg: #304b7d;
+  --message-own-color: #f7f9ff;
+  --action-border: #343842;
+  --action-bg: #20232a;
+  --action-color: #d9dde5;
+  --action-hover-bg: #2a2d35;
+  --action-hover-color: #ffffff;
+  --input-border: #39445a;
+  --input-bg: #191c22;
+  --input-color: #f2f3f5;
+  --accent: #4f7fea;
+
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
+  width: fit-content;
+  max-width: min(72%, 680px);
+  min-width: 0;
 }
 
 .message-wrapper.own {
@@ -277,27 +302,28 @@ onUnmounted(() => {
 .author-row {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
+  padding: 0 3px;
 }
 
 .author-avatar {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   border-radius: 50%;
-  background: #384b82;
-  color: #ffffff;
+  background: var(--avatar-bg, #384b82);
+  color: #fff;
   font-size: 10px;
   font-weight: 700;
   user-select: none;
 }
 
 .author-avatar.own {
-  background: #4a64a0;
+  background: var(--avatar-own-bg, #4a64a0);
 }
 
 .author-avatar img {
@@ -310,83 +336,106 @@ onUnmounted(() => {
 .author-name {
   display: inline-block;
   max-width: 300px;
-  padding: 4px 8px;
+  padding: 4px 9px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  border-radius: 6px;
-  background: #30343d;
-  color: #aab3c2;
-  font-size: 12px;
+  border-radius: 7px;
+  background: var(--author-tag-bg, #292d36);
+  color: var(--author-tag-color, #b9c2d2);
+  font-size: 11px;
   font-weight: 600;
 }
 
 .author-name.own-name {
-  background: #384b82;
-  color: #dce6ff;
-}
-.message {
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: rgb(38 29 106 / 0.66);
-  word-break: break-word;
+  background: var(--author-own-tag-bg, #303f65);
+  color: var(--author-own-tag-color, #e0e9ff);
 }
 
-.message-wrapper.other,
 .message {
-  background: #20232a;
+  position: relative;
+  max-width: 100%;
+  min-width: 48px;
+  margin: 0;
+  padding: 11px 14px;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  border: 1px solid var(--message-border, #30343d);
+  border-radius: 5px 17px 17px 17px;
+  background: var(--message-bg, #20232a);
+  color: var(--message-color, #f2f3f5);
+  box-shadow: 0 2px 5px rgb(0 0 0 / 8%);
+  transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+}
+
+.message-wrapper.own .message {
+  border-color: var(--message-own-border, #4165a8);
+  border-radius: 17px 5px 17px 17px;
+  background: var(--message-own-bg, #304b7d);
+  color: var(--message-own-color, #f7f9ff);
 }
 
 .message p {
   margin: 0;
-  line-height: 1.45;
+  color: inherit;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
 .message-actions {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 3px;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s ease;
 }
 
-.message-wrapper:hover,
-.message-actions {
+.message-wrapper:hover .message-actions,
+.message-wrapper:focus-within .message-actions {
   opacity: 1;
   pointer-events: auto;
 }
 
 .action-button {
-  width: 28px;
-  height: 28px;
+  width: 29px;
+  height: 29px;
   padding: 0;
-  border: 1px solid #343842;
-  border-radius: 6px;
-  background: #20232a;
-  color: #d9dde5;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  border: 1px solid var(--action-border, #343842);
+  border-radius: 9px;
+  background: var(--action-bg, #20232a);
+  color: var(--action-color, #d9dde5);
+  cursor: pointer;
+  font-size: 13px;
+  transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
 }
 
 .action-button:hover {
-  background: #2a2d35;
-  border-color: #2c3851;
-  color: #ffffff;
+  border-color: var(--accent, #4f7fea);
+  background: var(--action-hover-bg, #2a2d35);
+  color: var(--action-hover-color, #fff);
 }
 
 .delete-button:hover {
   border-color: #d45c5c;
+  color: #ff8b8b;
 }
 
 .edit-box {
-  min-width: 260px;
-  max-width: 420px;
+  width: min(420px, 70vw);
+  min-width: min(260px, 60vw);
 }
 
 .edit-input {
@@ -394,55 +443,56 @@ onUnmounted(() => {
   min-height: 80px;
   resize: vertical;
   box-sizing: border-box;
-  padding: 10px;
-  border: 1px solid #333b53;
-  border-radius: 7px;
+  padding: 11px 12px;
+  border: 1px solid var(--input-border, #39445a);
+  border-radius: 10px;
   outline: none;
-  background: #20232a;
-  color: #f2f3f5;
+  background: var(--input-bg, #191c22);
+  color: var(--input-color, #f2f3f5);
   font: inherit;
-  line-height: 1.45;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .edit-input:focus {
-  border-color: #4f7fea;
+  border-color: var(--accent, #4f7fea);
 }
 
 .edit-actions {
   display: flex;
   justify-content: flex-end;
   gap: 7px;
-  margin-top: 8px;
+  margin-top: 9px;
 }
 
 .edit-actions button {
-  height: 32px;
+  min-height: 32px;
   padding: 0 12px;
-  border-radius: 6px;
+  border-radius: 8px;
   font: inherit;
   font-size: 12px;
   cursor: pointer;
 }
 
 .cancel-button {
-  border: 1px solid #343842;
-  background: #20232a;
-  color: #d5d9e1;
+  border: 1px solid var(--action-border, #343842);
+  background: var(--action-bg, #20232a);
+  color: var(--action-color, #d5d9e1);
 }
 
 .cancel-button:hover {
-  background: #2a2d35;
+  background: var(--action-hover-bg, #2a2d35);
 }
 
 .save-button {
-  border: none;
-  background: #ffffff;
-  color: #1a1c21;
+  border: 1px solid var(--accent, #4f7fea);
+  background: var(--accent, #4f7fea);
+  color: #fff;
   font-weight: 600;
 }
 
 .save-button:hover:not(:disabled) {
-  background: #e7eaf0;
+  filter: brightness(1.08);
 }
 
 .save-button:disabled {
@@ -452,19 +502,19 @@ onUnmounted(() => {
 
 .message-image {
   display: block;
-  max-width: 320px;
-  max-height: 320px;
+  max-width: min(360px, 60vw);
+  max-height: 360px;
   width: auto;
   height: auto;
-  border-radius: 8px;
+  border-radius: 12px;
   object-fit: contain;
   cursor: pointer;
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .message-image:hover {
-  transform: scale(1.02);
-  opacity: 0.92;
+  transform: scale(1.01);
+  opacity: 0.95;
 }
 
 .image-preview {
@@ -475,8 +525,8 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   padding: 50px;
-  background: rgba(0, 0, 0, 0.82);
-  backdrop-filter: blur(4px);
+  background: rgb(0 0 0 / 84%);
+  backdrop-filter: blur(5px);
   cursor: zoom-out;
   overflow: hidden;
 }
@@ -497,8 +547,8 @@ onUnmounted(() => {
   width: auto;
   height: auto;
   object-fit: contain;
-  border-radius: 10px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 60%);
   cursor: default;
   transform-origin: center center;
   transition: transform 0.12s ease;
@@ -514,20 +564,19 @@ onUnmounted(() => {
   padding: 0;
   border: 1px solid #454954;
   border-radius: 50%;
-  background: rgba(32, 35, 42, 0.95);
-  color: #ffffff;
+  background: rgb(32 35 42 / 95%);
+  color: #fff;
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .close-button:hover {
   background: #343842;
-  border-color: #5a6070;
   transform: scale(1.05);
 }
 
@@ -535,6 +584,12 @@ onUnmounted(() => {
   transform: scale(0.95);
 }
 
+@media (hover: none) {
+  .message-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
 
 @media (max-width: 700px) {
   .message-wrapper {
@@ -542,7 +597,7 @@ onUnmounted(() => {
   }
 
   .message-image {
-    max-width: 260px;
+    max-width: min(260px, 70vw);
     max-height: 260px;
   }
 
@@ -553,10 +608,6 @@ onUnmounted(() => {
   .preview-image {
     max-width: 90vw;
     max-height: 85vh;
-  }
-
-  .zoom-hint {
-    display: none;
   }
 }
 </style>

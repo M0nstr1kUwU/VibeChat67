@@ -82,16 +82,42 @@ async function scrollToBottom() {
 </template>
 
 <style scoped>
+
 .messages {
+  --messages-bg: #111318;
+  --scrollbar-thumb: #3a3e49;
+  --scrollbar-hover: #535968;
+  --muted-color: #858c98;
+
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 24px;
+  padding: 24px 28px;
+  background: var(--messages-bg, transparent);
   scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb, #3a3e49) transparent;
+}
+
+.messages::-webkit-scrollbar {
+  width: 7px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: var(--scrollbar-thumb, #3a3e49);
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-hover, #535968);
 }
 
 .empty {
@@ -100,6 +126,13 @@ async function scrollToBottom() {
   flex-direction: column;
   gap: 6px;
   text-align: center;
-  color: #858c98;
+  color: var(--muted-color, #858c98);
+}
+
+@media (max-width: 700px) {
+  .messages {
+    gap: 13px;
+    padding: 16px 12px;
+  }
 }
 </style>
